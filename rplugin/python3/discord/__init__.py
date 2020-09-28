@@ -39,6 +39,8 @@ class DiscordPlugin(object):
         self.lastused = False
         self.lasttimestamp = int(time())
         self.cbtimer = None
+        self.fts_whitelist_enabled = True
+        self.fts_blacklist_enabled = True
 
     @neovim.autocmd("VimEnter", "*", sync=True)
     def on_vimenter(self):
@@ -47,6 +49,8 @@ class DiscordPlugin(object):
         ]
         self.fts_blacklist = self.vim.vars.get("discord_fts_blacklist")
         self.fts_whitelist = self.vim.vars.get("discord_fts_whitelist")
+        self.fts_blacklist_enabled = self.vim.vars.get("discord_fts_blacklist_enabled")
+        self.fts_whitelist_enabled = self.vim.vars.get("discord_fts_whitelist_enabled")
 
     @neovim.autocmd("BufEnter", "*", sync=True)
     def on_bufenter(self):
@@ -93,7 +97,10 @@ class DiscordPlugin(object):
             return
         ft = self.get_current_buf_var("&ft")
         self.log_debug('ft: {}'.format(ft))
-        if ft in self.fts_blacklist or ft not in self.fts_whitelist:
+        if self.fts_blacklist_enabled and ft in self.fts_blacklist:
+            return
+
+        if self.fts_whitelist_enabled and ft not in self.fts_whitelist:
             return
         workspace = self.get_workspace()
         if self.is_ratelimited(filename):

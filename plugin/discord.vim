@@ -81,3 +81,9 @@ endif
 if !exists('g:discord_fts_blacklist')
   let g:discord_fts_blacklist = ['help', 'nerdtree']
 endif
+if !exists('g:discord_blacklist_enabled')
+    let g:discord_blacklist_enabled = 1
+endif
+if !exists('g:discord_whitelist_enabled')
+    let g:discord_whitelist_enabled = 1
+endif
